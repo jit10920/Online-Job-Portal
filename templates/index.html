@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}JobConnect — Find Your Next Opportunity{% endblock %}
+{% block content %}
+<section class="hero">
+    <div>
+        <h1>Find the right job.<br>Build your future.</h1>
+        <p>Search opportunities and connect with employers through one simple platform.</p>
+        <a class="btn" href="{{ url_for('jobs') }}">Browse Jobs</a>
+    </div>
+    <div class="hero-card">
+        <h3>From application to offer</h3>
+        <p>Every application moves through a clear pipeline, for both sides.</p>
+        <div class="pipeline">
+            <div class="pipeline-step">
+                <span class="pipeline-dot"></span>
+                <div><div class="pipeline-label">Discover</div><div class="pipeline-sub">Search and filter open roles</div></div>
+            </div>
+            <div class="pipeline-step active">
+                <span class="pipeline-dot"></span>
+                <div><div class="pipeline-label">Apply</div><div class="pipeline-sub">Submit with your profile & cover letter</div></div>
+            </div>
+            <div class="pipeline-step">
+                <span class="pipeline-dot"></span>
+                <div><div class="pipeline-label">Shortlisted</div><div class="pipeline-sub">Employer reviews your application</div></div>
+            </div>
+            <div class="pipeline-step">
+                <span class="pipeline-dot"></span>
+                <div><div class="pipeline-label">Hired</div><div class="pipeline-sub">Accept the offer and get to work</div></div>
+            </div>
+        </div>
+        {% if not session.get('user_id') %}
+        <a href="{{ url_for('register') }}">Create your account →</a>
+        {% endif %}
+    </div>
+</section>
+
+<h2>Latest Jobs</h2>
+<div class="grid">
+{% for job in jobs %}
+<article class="card">
+    <span class="tag">{{ job.job_type }}</span>
+    <h3>{{ job.title }}</h3>
+    <p><strong>{{ job.company }}</strong></p>
+    <p>{{ job.location }}{% if job.salary %} · {{ job.salary }}{% endif %}</p>
+    <a href="{{ url_for('job_detail', job_id=job.id) }}">View details →</a>
+</article>
+{% else %}
+<p>No jobs have been posted yet.</p>
+{% endfor %}
+</div>
+{% endblock %}

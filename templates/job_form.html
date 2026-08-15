@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit Job' if job else 'Post a Job' }}{% endblock %}
+{% block content %}
+<div class="form-card wide">
+<h2>{{ 'Edit Job' if job else 'Post a New Job' }}</h2>
+<form method="post">
+    <label>Job Title *</label>
+    <input name="title" value="{{ job.title if job else '' }}" required>
+    <label>Company *</label>
+    <input name="company" value="{{ job.company if job else '' }}" required>
+    <label>Location *</label>
+    <input name="location" value="{{ job.location if job else '' }}" required>
+    <label>Job Type *</label>
+    <select name="job_type" required>
+        {% for t in ['Full-time','Part-time','Internship','Remote','Contract'] %}
+        <option value="{{ t }}" {% if job and job.job_type == t %}selected{% endif %}>{{ t }}</option>
+        {% endfor %}
+    </select>
+    <label>Salary</label>
+    <input name="salary" value="{{ job.salary if job else '' }}" placeholder="e.g. 30,000–50,000 BDT">
+    <label>Description *</label>
+    <textarea name="description" rows="7" required>{{ job.description if job else '' }}</textarea>
+    <label>Requirements</label>
+    <textarea name="requirements" rows="6">{{ job.requirements if job else '' }}</textarea>
+    <button class="btn" type="submit">{{ 'Update Job' if job else 'Publish Job' }}</button>
+</form>
+</div>
+{% endblock %}

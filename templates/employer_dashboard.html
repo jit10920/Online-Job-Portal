@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Employer Dashboard{% endblock %}
+{% block content %}
+<div class="page-head">
+    <div><h1>Employer Dashboard</h1><p>Manage your job postings and applications.</p></div>
+    <a class="btn" href="{{ url_for('create_job') }}">+ Post Job</a>
+</div>
+
+<h2>Your Jobs</h2>
+<div class="grid">
+{% for job in jobs %}
+<article class="card">
+    <span class="tag">{{ job.job_type }}</span>
+    <h3>{{ job.title }}</h3>
+    <p>{{ job.company }} · {{ job.location }}</p>
+    <a href="{{ url_for('edit_job', job_id=job.id) }}">Edit</a>
+    <form class="inline" method="post" action="{{ url_for('delete_job', job_id=job.id) }}" onsubmit="return confirm('Delete this job?')">
+        <button class="link-danger" type="submit">Delete</button>
+    </form>
+</article>
+{% else %}<p>You have not posted any jobs.</p>{% endfor %}
+</div>
+
+<h2>Applications</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Applicant</th><th>Job</th><th>Email</th><th>Applied</th><th>Status</th></tr></thead>
+<tbody>
+{% for a in applications %}
+<tr>
+<td><a href="{{ url_for('view_profile', user_id=a.applicant_id) }}">{{ a.applicant_name }}</a></td><td>{{ a.title }}</td><td>{{ a.email }}</td>
+<td>{{ a.applied_at }}</td>
+<td>
+<form method="post" action="{{ url_for('update_application', application_id=a.id) }}">
+<select name="status" onchange="this.form.submit()">
+{% for s in ['Pending','Shortlisted','Rejected','Accepted'] %}
+<option value="{{ s }}" {% if a.status == s %}selected{% endif %}>{{ s }}</option>
+{% endfor %}
+</select>
+</form>
+</td>
+</tr>
+{% else %}
+<tr><td colspan="5">No applications yet.</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock %}

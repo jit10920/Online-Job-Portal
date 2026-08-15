@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}{{ profile_user.name }} — Profile{% endblock %}
+{% block content %}
+<div class="profile-header">
+    <div class="avatar-circle large">{{ profile_user.name[0]|upper }}</div>
+    <div class="profile-header-info">
+        <div class="profile-header-top">
+            <h1>{{ profile_user.name }}</h1>
+            <span class="tag role-tag">{{ 'Job Seeker' if profile_user.role == 'job_seeker' else 'Employer' }}</span>
+        </div>
+        {% if profile_user.headline %}<p class="headline">{{ profile_user.headline }}</p>{% endif %}
+        <p class="meta-line">
+            {% if profile_user.location %}<span>📍 {{ profile_user.location }}</span>{% endif %}
+            {% if profile_user.phone %}<span>📞 {{ profile_user.phone }}</span>{% endif %}
+            <span>✉️ {{ profile_user.email }}</span>
+        </p>
+        <div class="profile-links">
+            {% if profile_user.resume_url %}<a class="btn small outline" href="{{ profile_user.resume_url }}" target="_blank" rel="noopener">View Resume</a>{% endif %}
+            {% if profile_user.linkedin_url %}<a class="btn small outline" href="{{ profile_user.linkedin_url }}" target="_blank" rel="noopener">LinkedIn</a>{% endif %}
+            {% if profile_user.portfolio_url %}<a class="btn small outline" href="{{ profile_user.portfolio_url }}" target="_blank" rel="noopener">Portfolio</a>{% endif %}
+            {% if profile_user.company_website %}<a class="btn small outline" href="{{ profile_user.company_website }}" target="_blank" rel="noopener">Company Website</a>{% endif %}
+        </div>
+    </div>
+    {% if is_own_profile %}
+    <a class="btn" href="{{ url_for('edit_profile') }}">Edit Profile</a>
+    {% endif %}
+</div>
+
+<div class="profile-grid">
+    <div class="profile-main">
+        {% if profile_user.role == 'job_seeker' %}
+            <section class="card profile-section">
+                <h2>About</h2>
+                <p class="pre">{{ profile_user.bio or 'This job seeker has not added a bio yet.' }}</p>
+            </section>
+
+            <section class="card profile-section">
+                <h2>Experience</h2>
+                {% for e in experience %}
+                <div class="experience-item">
+                    <div class="experience-item-head">
+                        <h4>{{ e.job_title }}</h4>
+                        <span class="experience-dates">
+                            {{ e.start_date or 'N/A' }} — {{ 'Present' if e.currently_working else (e.end_date or 'N/A') }}
+                        </span>
+                    </div>
+                    <p class="experience-company">{{ e.company }}</p>
+                    {% if e.description %}<p class="pre">{{ e.description }}</p>{% endif %}
+                </div>
+                {% else %}
+                <p class="empty-note">No experience added yet.</p>
+                {% endfor %}
+            </section>
+        {% else %}
+            <section class="card profile-section">
+                <h2>About {{ profile_user.company_name or profile_user.name }}</h2>
+                <p class="pre">{{ profile_user.company_description or profile_user.bio or 'This employer has not added a company description yet.' }}</p>
+            </section>
+        {% endif %}
+    </div>
+
+    <div class="profile-side">
+        {% if profile_user.role == 'job_seeker' and profile_user.skills %}
+        <section class="card profile-section">
+            <h2>Skills</h2>
+            <div class="skill-tags">
+                {% for s in profile_user.skills.split(',') %}
+                    {% if s.strip() %}<span class="tag skill-tag">{{ s.strip() }}</span>{% endif %}
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        {% if profile_user.role == 'employer' %}
+        <section class="card profile-section">
+            <h2>Company Info</h2>
+            <ul class="detail-list">
+                {% if profile_user.company_name %}<li><strong>Company:</strong> {{ profile_user.company_name }}</li>{% endif %}
+                {% if profile_user.company_size %}<li><strong>Size:</strong> {{ profile_user.company_size }}</li>{% endif %}
+                {% if profile_user.location %}<li><strong>Location:</strong> {{ profile_user.location }}</li>{% endif %}
+            </ul>
+        </section>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

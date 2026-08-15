@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile{% endblock %}
+{% block content %}
+<div class="page-head">
+    <div><h1>Edit Profile</h1><p>Keep your professional details up to date.</p></div>
+    <a class="btn small outline" href="{{ url_for('profile') }}">← Back to Profile</a>
+</div>
+
+<div class="form-card wide">
+<h2>Basic Information</h2>
+<form method="post">
+    <label>Full Name *</label>
+    <input name="name" value="{{ user.name }}" required>
+
+    <label>Professional Headline</label>
+    <input name="headline" value="{{ user.headline or '' }}"
+           placeholder="{{ 'e.g. Front-End Developer | React & UI/UX' if user.role == 'job_seeker' else 'e.g. Hiring Full-Stack Engineers' }}">
+
+    <label>Phone</label>
+    <input name="phone" value="{{ user.phone or '' }}">
+
+    <label>Location</label>
+    <input name="location" value="{{ user.location or '' }}" placeholder="City, Country">
+
+    {% if user.role == 'job_seeker' %}
+        <label>Bio / Summary</label>
+        <textarea name="bio" rows="5" placeholder="A short professional summary about yourself.">{{ user.bio or '' }}</textarea>
+
+        <label>Skills (comma-separated)</label>
+        <input name="skills" value="{{ user.skills or '' }}" placeholder="e.g. Python, Flask, SQL, Communication">
+
+        <label>Resume / CV Link</label>
+        <input name="resume_url" value="{{ user.resume_url or '' }}" placeholder="https://...">
+
+        <label>LinkedIn URL</label>
+        <input name="linkedin_url" value="{{ user.linkedin_url or '' }}" placeholder="https://linkedin.com/in/...">
+
+        <label>Portfolio / Personal Website</label>
+        <input name="portfolio_url" value="{{ user.portfolio_url or '' }}" placeholder="https://...">
+    {% else %}
+        <label>Bio</label>
+        <textarea name="bio" rows="3" placeholder="A short line about you as a recruiter/hiring manager.">{{ user.bio or '' }}</textarea>
+
+        <label>Company Name</label>
+        <input name="company_name" value="{{ user.company_name or '' }}">
+
+        <label>Company Website</label>
+        <input name="company_website" value="{{ user.company_website or '' }}" placeholder="https://...">
+
+        <label>Company Size</label>
+        <select name="company_size">
+            <option value="">Select size</option>
+            {% for size in ['1-10','11-50','51-200','201-500','500+'] %}
+            <option value="{{ size }}" {% if user.company_size == size %}selected{% endif %}>{{ size }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Company Description</label>
+        <textarea name="company_description" rows="5" placeholder="What does your company do?">{{ user.company_description or '' }}</textarea>
+    {% endif %}
+
+    <button class="btn" type="submit">Save Changes</button>
+</form>
+</div>
+
+{% if user.role == 'job_seeker' %}
+<div class="form-card wide">
+<h2>Work Experience</h2>
+
+{% for e in experience %}
+<div class="experience-item editable">
+    <div class="experience-item-head">
+        <h4>{{ e.job_title }} — {{ e.company }}</h4>
+        <form method="post" action="{{ url_for('delete_experience', exp_id=e.id) }}" onsubmit="return confirm('Remove this experience entry?')">
+            <button class="link-danger" type="submit">Remove</button>
+        </form>
+    </div>
+    <span class="experience-dates">{{ e.start_date or 'N/A' }} — {{ 'Present' if e.currently_working else (e.end_date or 'N/A') }}</span>
+    {% if e.description %}<p class="pre">{{ e.description }}</p>{% endif %}
+</div>
+{% else %}
+<p class="empty-note">You haven't added any experience yet — add your first role below.</p>
+{% endfor %}
+
+<hr>
+<h3>Add Experience</h3>
+<form method="post" action="{{ url_for('add_experience') }}" class="experience-form">
+    <label>Job Title *</label>
+    <input name="job_title" required>
+    <label>Company *</label>
+    <input name="company" required>
+    <div class="experience-date-row">
+        <div>
+            <label>Start Date</label>
+            <input type="month" name="start_date">
+        </div>
+        <div>
+            <label>End Date</label>
+            <input type="month" name="end_date">
+        </div>
+    </div>
+    <label class="checkbox-label"><input type="checkbox" name="currently_working"> I currently work here</label>
+    <label>Description</label>
+    <textarea name="description" rows="4" placeholder="Key responsibilities and achievements."></textarea>
+    <button class="btn" type="submit">Add Experience</button>
+</form>
+</div>
+{% endif %}
+{% endblock %}

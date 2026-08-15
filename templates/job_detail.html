@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ job.title }}{% endblock %}
+{% block content %}
+<div class="detail-card">
+    <span class="tag">{{ job.job_type }}</span>
+    <h1>{{ job.title }}</h1>
+    <h3>{{ job.company }}</h3>
+    <p>{{ job.location }}{% if job.salary %} · {{ job.salary }}{% endif %}</p>
+    <hr>
+    <h3>Job Description</h3>
+    <p class="pre">{{ job.description }}</p>
+    <h3>Requirements</h3>
+    <p class="pre">{{ job.requirements or 'Not specified.' }}</p>
+    <h3>Employer</h3>
+    <p><a href="{{ url_for('view_profile', user_id=job.employer_id) }}">{{ job.employer_name }}</a> · {{ job.employer_email }}</p>
+    {% if session.get('role') == 'job_seeker' %}
+        <a class="btn" href="{{ url_for('apply', job_id=job.id) }}">Apply Now</a>
+    {% elif not session.get('user_id') %}
+        <a class="btn" href="{{ url_for('login') }}">Login to Apply</a>
+    {% endif %}
+</div>
+{% endblock %}

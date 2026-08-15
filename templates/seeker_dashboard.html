@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard{% endblock %}
+{% block content %}
+<div class="page-head">
+    <div><h1>Job Seeker Dashboard</h1><p>Track the jobs you have applied for.</p></div>
+    <a class="btn" href="{{ url_for('jobs') }}">Find Jobs</a>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Job</th><th>Company</th><th>Location</th><th>Applied</th><th>Status</th></tr></thead>
+<tbody>
+{% for a in applications %}
+<tr><td>{{ a.title }}</td><td>{{ a.company }}</td><td>{{ a.location }}</td><td>{{ a.applied_at }}</td><td><span class="status-badge status-{{ a.status|lower }}">{{ a.status }}</span></td></tr>
+{% else %}
+<tr><td colspan="5">You have not applied for any jobs yet.</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% endblock %}
