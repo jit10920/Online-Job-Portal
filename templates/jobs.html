@@ -21,7 +21,7 @@
     <h3>{{ job.title }}</h3>
     <p><strong>{{ job.company }}</strong></p>
     <p>{{ job.location }}{% if job.salary %} · {{ job.salary }}{% endif %}</p>
-    <p>{{ job.description[:150] }}{% if job.description|length > 150 %}...{% endif %}</p>
+    <p>{{ job.description | truncate(150) }}</p>
     <a href="{{ url_for('job_detail', job_id=job.id) }}">View details →</a>
 </article>
 {% else %}

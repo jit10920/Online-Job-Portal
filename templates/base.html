@@ -14,14 +14,14 @@
     <a class="brand" href="{{ url_for('index') }}">JobConnect</a>
     <div class="nav-links">
         <a href="{{ url_for('jobs') }}">Find Jobs</a>
-        {% if session.get('user_id') %}
+        {% if session.user_id %}
             <a href="{{ url_for('dashboard') }}">Dashboard</a>
-            {% if session.get('role') == 'employer' %}
+            {% if session.role == 'employer' %}
                 <a href="{{ url_for('create_job') }}">Post Job</a>
             {% endif %}
             <a class="nav-avatar" href="{{ url_for('profile') }}" title="My Profile">
-                <span class="avatar-circle">{{ session.get('name', '?')[0]|upper }}</span>
-                <span class="user-name">{{ session.get('name') }}</span>
+                <span class="avatar-circle">{{ (session.name or '?')[0]|upper }}</span>
+                <span class="user-name">{{ session.name }}</span>
             </a>
             <a class="btn small outline" href="{{ url_for('logout') }}">Logout</a>
         {% else %}
@@ -32,11 +32,10 @@
 </nav>
 
 <main class="container">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% for category, message in messages %}
-        <div class="alert {{ category }}">{{ message }}</div>
-      {% endfor %}
-    {% endwith %}
+    {% set messages = get_flashed_messages() %}
+    {% for msg in messages %}
+        <div class="alert">{{ msg }}</div>
+    {% endfor %}
     {% block content %}{% endblock %}
 </main>
 

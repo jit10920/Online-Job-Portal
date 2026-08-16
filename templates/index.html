@@ -28,7 +28,7 @@
                 <div><div class="pipeline-label">Hired</div><div class="pipeline-sub">Accept the offer and get to work</div></div>
             </div>
         </div>
-        {% if not session.get('user_id') %}
+        {% if not session.user_id %}
         <a href="{{ url_for('register') }}">Create your account →</a>
         {% endif %}
     </div>

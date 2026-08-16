@@ -13,9 +13,9 @@
     <p class="pre">{{ job.requirements or 'Not specified.' }}</p>
     <h3>Employer</h3>
     <p><a href="{{ url_for('view_profile', user_id=job.employer_id) }}">{{ job.employer_name }}</a> · {{ job.employer_email }}</p>
-    {% if session.get('role') == 'job_seeker' %}
+    {% if session.role == 'job_seeker' %}
         <a class="btn" href="{{ url_for('apply', job_id=job.id) }}">Apply Now</a>
-    {% elif not session.get('user_id') %}
+    {% elif not session.user_id %}
         <a class="btn" href="{{ url_for('login') }}">Login to Apply</a>
     {% endif %}
 </div>
